@@ -1,0 +1,9 @@
+🧑 User types: http://localhost:3000
+     ⬇️
+🌐 Browser sends: GET / (request - `req`)
+     ⬇️
+🖥️ Node.js server receives request
+     ⬇️
+📤 Server sends: HTML back to browser (response - `res`)
+     ⬇️
+🌐 Browser shows result
