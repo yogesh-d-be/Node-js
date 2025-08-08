@@ -1,5 +1,26 @@
 const mongoose = require('mongoose');
 
+// const userSchema = new mongoose.Schema({
+//     email:{
+//         type:String,
+//         unique: true,
+//         required: true
+//     },
+//     mobileNumber:{
+//         type:Number,
+//         unique: true,
+//         required: true
+//     },
+//     password:{
+//         type:String,
+//         required:true,
+//         min:6,
+//         max:16
+//     }
+// },{
+//     collection:"Register"
+// });
+
 const userSchema = new mongoose.Schema({
     email:{
         type:String,
@@ -11,11 +32,12 @@ const userSchema = new mongoose.Schema({
         unique: true,
         required: true
     },
-    password:{
+    otp:{
         type:String,
-        required:true,
-        min:6,
-        max:16
+        min:6
+    },
+    otpExpiry:{
+        type:Date
     }
 },{
     collection:"Register"

@@ -7,6 +7,10 @@ router.post("/register", userController.userRegisterController);
 
 router.post("/login", userController.userLoginController);
 
+router.post("/otplogin", userController.userLoginWithOtpController);
+
+router.post("/verifyotp", userController.userVerifyOtpController);
+
 router.get("/profile",verifyToken, userController.showProfileController);
 
 

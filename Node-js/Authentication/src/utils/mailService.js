@@ -1,10 +1,10 @@
 const nodemailer = require('nodemailer');
-
+require('dotenv').config();
 
 const user_mail = process.env.MAIL_USER;
 const mail_pass_key = process.env.MAIL_PASS_KEY;
 
-const transaport = nodemailer.createTransport({
+const transport = nodemailer.createTransport({
     service:"gmail",
     auth:{
         user: user_mail,
@@ -12,18 +12,23 @@ const transaport = nodemailer.createTransport({
     }
 });
 
-const mailOptions = {
+
+
+const mail = async(userEmail, otp) => {
+    const mailOptions  = {
     from:user_mail,
-    to:"yogesh@yopmail.com",
-    subject:"testing",
-    text:"Hi"
+    to:userEmail,
+    subject:"OTP Verification",
+    text:`To verify enter the below otp:${otp}`
 }
 
-const mail = () => transaport.sendMail(mailOptions,(err, info) =>{
+
+await transport.sendMail(mailOptions,(err, info) =>{
     if(err){
         console.log("err", err)
     }
-    console.log("info", info)
+    console.log("info", info.response)
 })
+}
 
 module.exports = mail;
