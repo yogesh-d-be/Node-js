@@ -1,4 +1,6 @@
 // const { generateToken } = require("../middleware/auth");
+const orderModel = require("../models/order.model");
+const productModel = require("../models/product.model");
 const UserModel = require("../models/user.model");
 const userJoiSchema = require("../validation/joiSchema.");
 // const bcrypt = require('bcrypt');
@@ -152,31 +154,111 @@ const userJoiSchema = require("../validation/joiSchema.");
 //         return res.status(error.statusCode || 500).send({message: error.message ||"Error when regsitering user"})
 //     }
 // }
-const registerUserDetailsController = async (req, res) => {
+// const registerUserDetailsController = async (req, res) => {
+//     try {
+//         const userData = req.body;
+//         const {error, value} = userJoiSchema.validate(userData);
+//         // userData.image = req.files;
+//         // console.log("re", req.files)
+//         // const images = []
+//         // req.files.map((file)=>{
+//         //     images.push(file.filename)
+//         // })
+//         // userData.image = images;
+
+//         if(error){
+//             return res.status(400).send(error)
+//         }
+
+//         console.log("val", value);
+
+//         const storeData = new UserModel(value);
+//         await storeData.save();
+
+//         return res.status(200).send({message:"Data uploaded successfully"});
+//     } catch (error) {
+//         return res.status(error.statusCode || 500).send({message: error.message ||"Error when regsitering user"})
+//     }
+// }
+
+
+const getProductData = async (req, res) => {
     try {
-        const userData = req.body;
-        // const {error, value} = userJoiSchema.validate(userData);
-        userData.image = req.files;
-        console.log("re", req.files)
-        const images = []
-        req.files.map((file)=>{
-            images.push(file.filename)
-        })
-        userData.image = images;
+       const getProducts = await productModel.find().sort({_id:1}).skip(1).limit(5);
+    return res.status(200).send({data: getProducts});
 
-        // if(error){
-        //     return res.status(400).send(error)
-        // }
-
-        // console.log("val", value);
-
-        // const storeData = new UserModel(value);
-        const storeData = new UserModel(userData);
-        await storeData.save();
-
-        return res.status(200).send({message:"Data uploaded successfully"});
     } catch (error) {
-        return res.status(error.statusCode || 500).send({message: error.message ||"Error when regsitering user"})
+               return res.status(error.statusCode || 500).send({message: error.message ||"Error when fetch productss"})
+
+    }
+}
+
+const getAggregationData = async (req, res) => {
+    try {
+        // const fetch = await productModel.aggregate([
+        //     {
+        //         $match:{
+                    
+        //         category:"Clothing"
+        //         }
+        //     }
+        // ]);
+        const fetch = await orderModel.aggregate([
+            {
+                $match:{
+                    customerId:"CU100"
+                }
+            },
+            {
+                $lookup:{
+                    from:"customers", //which collection
+                    localField:"customerId", //which field want to search from currect collection
+                    foreignField:"_id",
+                    as:"users"
+                }
+            },
+            {$unwind:{
+                path:'$users'
+            }},
+            {
+                $lookup:{
+                    from:"products",
+                    localField:"productId",
+                    foreignField:"_id",
+                    as:"productData"
+                }
+            },
+              {$unwind:{
+                path:'$productData'
+            }},
+            {
+                $project:{
+                    _id:1,
+                    date:1,
+                    quantity:1,
+                    total:1,
+                    userName:'$users.name',
+                    userCity:'$users.city',
+                    productData:'$productData.name'
+                }
+            },
+            {$sort:{_id:1}},
+            {$skip:0},
+            {$limit:5}
+            // },
+            // {
+            //     $group:{
+            //         _id:"$customerId",
+            //         totalPrice:{$sum:'$total'},
+            //         totalQuantity:{$sum:'$quantity'}
+            //     }
+            // }
+        ])
+        return res.status(200).send({data: fetch});
+
+    } catch (error) {
+        return res.status(500).send({message: "Error when fetvhing data"});
+
     }
 }
 
@@ -186,5 +268,7 @@ module.exports = {
     // userLoginWithOtpController,
     // userVerifyOtpController,
     // showProfileController,
-    registerUserDetailsController
+    // registerUserDetailsController,
+    getProductData,
+    getAggregationData
 }

@@ -141,7 +141,17 @@ const UserModel = require("../models/user.model");
 const registerUserDetailsController = async (req, res) => {
     try {
         const userData = req.body;
-        userData.image = req.file.filename;
+        // console.log("user", userData)
+        // console.log("req file", req.files)
+        const fileData = req.files
+        const imageData = [];
+        fileData.map((file)=>{
+            imageData.push(file.filename)
+        })
+
+        console.log("imagedata", imageData);
+        userData.image = imageData;
+        // console.log("user 1", userData)
         const storeData = new UserModel(userData);
         await storeData.save();
 

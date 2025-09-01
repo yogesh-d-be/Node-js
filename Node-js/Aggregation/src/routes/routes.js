@@ -16,7 +16,10 @@ const router = express.Router();
 
 // multipart/form-data
 
-router.post("/userdata", upload.array("image", 2), userController.registerUserDetailsController);
+// router.post("/userdata", upload.single("image"), userController.registerUserDetailsController);
+// router.post("/userdata", upload.array("image", 2), userController.registerUserDetailsController);
 
+router.get("/product",userController.getProductData )
+router.get("/aggregation", userController.getAggregationData)
 
 module.exports = router;

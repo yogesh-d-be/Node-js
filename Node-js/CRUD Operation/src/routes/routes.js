@@ -6,8 +6,8 @@ router.post("/user", userController.userCreateController);
 
 router.get("/showuser", userController.showUserController);
 
-// router.put("/updateuser/:id", userController.updateUserController);
-router.put("/updateuser", userController.updateUserController);
+router.put("/updateuser/:id", userController.updateUserController);
+// router.put("/updateuser", userController.updateUserController);
 
 router.delete("/deleteuser/:id", userController.deleteUserController)
 

@@ -46,6 +46,9 @@ const userSchema = new mongoose.Schema({
     userName:{
         type:String
     },
+    // image:{
+    //     type:String
+    // },
     image:{
         type:Array
     },

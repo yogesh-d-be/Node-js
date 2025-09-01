@@ -4,6 +4,7 @@ const UserModel = require("../models/user.model");
 const userCreateController = async(req, res) =>{
 try {
     const userData = req.body;
+    console.log("user", userData)
     const storeData = new UserModel(userData);
     await storeData.save();
 
@@ -15,8 +16,8 @@ try {
 
 const showUserController = async (req, res) => {
     try {
-        // const showUser = await UserModel.find(); //show the all data
-        const showUser = await UserModel.findOne({email:"yogesh@gmail.com"}); //find the matched data only
+        const showUser = await UserModel.find().sort({_id:-1}) //show the all data
+        // const showUser = await UserModel.findOne({email:"yogesh@gmail.com"}); //find the matched data only
         // const id = req.params.id; //params
         // const showUser = await UserModel.findById(id); // to find the data based on object Id or _id
         res.status(200).send({data:showUser})
@@ -38,8 +39,10 @@ const showUserController = async (req, res) => {
 
 const updateUserController = async (req, res) => {
     try {
-        const {name, email} = req.body;
-        const updateUser = await UserModel.findOneAndUpdate({email: email}, {name: name}, {new: true});
+
+        const {id} = req.params;
+        const updatedData = req.body;
+        const updateUser = await UserModel.findByIdAndUpdate(id,{...updatedData} , {new: true});
         res.status(200).send({data: updateUser})
     } catch (error) {
         res.status(500).send("Error when update users")
